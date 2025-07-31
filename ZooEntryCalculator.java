@@ -2,39 +2,44 @@ import java.util.Scanner;
 
 public class ZooEntryCalculator {
 
-    // Method to calculate the total charge for a group
+    // Calculates total charge for a single group based on entry rules
     public static int calculateGroupCharge(int numChildren, int numAdults, int numSeniors) {
         int totalCharge = 0;
 
-        // Adults: $10 each
+        // Adults pay $10 each
         totalCharge += numAdults * 10;
 
-        // Seniors: $8 each
+        // Seniors pay $8 each
         totalCharge += numSeniors * 8;
 
-        // Determine how many children are accompanied
+        // Adults and seniors can each accompany one child
         int totalAccompanying = numAdults + numSeniors;
+
+        // Children accompanied by an adult/senior pay less
         int accompaniedChildren = Math.min(numChildren, totalAccompanying);
+
+        // Extra children are charged at unaccompanied rate
         int unaccompaniedChildren = numChildren - accompaniedChildren;
 
-        // Accompanied children: $2 each
+        // $2 per accompanied child
         totalCharge += accompaniedChildren * 2;
 
-        // Unaccompanied children: $5 each
+        // $5 per unaccompanied child
         totalCharge += unaccompaniedChildren * 5;
 
         return totalCharge;
     }
 
     public static void main(String[] args) {
-        // Try-with-resources to ensure Scanner is closed properly
+        // Scanner auto-closes after this block
         try (Scanner scanner = new Scanner(System.in)) {
             int totalTakings = 0;
 
             while (true) {
                 System.out.print("Enter a group? (Yes=1/No=0): ");
-                String response = scanner.nextLine().trim().toUpperCase();
+                String response = scanner.nextLine().trim();
 
+                // Exit if user enters 0
                 if (response.equals("0")) {
                     break;
                 }
@@ -49,16 +54,18 @@ public class ZooEntryCalculator {
                     System.out.print("Enter the number of seniors (age 60+): ");
                     int numSeniors = Integer.parseInt(scanner.nextLine().trim());
 
+                    // Calculate and show charge for this group
                     int groupCharge = calculateGroupCharge(numChildren, numAdults, numSeniors);
                     totalTakings += groupCharge;
 
                     System.out.println("Total entry charge is $" + groupCharge);
                 } else {
-                    // Any non-Y input (except Q, already handled) is treated as a quit command
+                    // Any input that's not 1 or 0 is treated as exit
                     break;
                 }
             }
 
+            // Show final total after all groups processed
             System.out.println("Total takings: $" + totalTakings);
         }
     }
